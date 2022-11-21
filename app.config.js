@@ -1,7 +1,4 @@
 import "dotenv/config";
-
-console.log("env", process.env.ENV);
-
 export default {
   name: "rate-repository-app",
   slug: "rate-repository-app",
