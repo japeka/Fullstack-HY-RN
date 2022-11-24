@@ -3,6 +3,7 @@ import FormikTextInput from "./FormikTextInput";
 import { View, StyleSheet, Pressable, Text } from "react-native";
 import { Formik } from "formik";
 import theme from "./theme";
+import useSignIn from "../hooks/useSignIn";
 
 import * as yup from "yup";
 
@@ -34,8 +35,16 @@ const validationSchema = yup.object().shape({
 });
 
 const SignIn = () => {
-  const handleSubmit = (values) => {
-    console.log("janne", values);
+  const [signIn] = useSignIn();
+
+  const handleSubmit = async (values) => {
+    const { username, password } = values;
+    try {
+      const { data } = await signIn({ username, password });
+      console.log("data", data);
+    } catch (e) {
+      console.log("error", e);
+    }
   };
   return (
     <Formik
