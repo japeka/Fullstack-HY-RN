@@ -1,9 +1,18 @@
-import React from "react";
+import React, { useContext } from "react";
+import { useApolloClient, useQuery } from "@apollo/client";
 
-//Text,
-import { View, StyleSheet, ScrollView } from "react-native";
+import { ME } from "../graphql/queries";
+import {
+  View,
+  Text,
+  StyleSheet,
+  ScrollView,
+  TouchableWithoutFeedback,
+} from "react-native";
 import { Link } from "react-router-dom";
 import theme from "./theme";
+import { useNavigate } from "react-router-dom";
+import AuthStorageContext from "../contexts/AuthStorageContext";
 
 const styles = StyleSheet.create({
   container: {
@@ -17,21 +26,47 @@ const styles = StyleSheet.create({
     fontSize: theme.appbar.fontsize,
     paddingLeft: 20,
   },
+  menuButton: {
+    paddingTop: 17,
+    color: theme.appbar.color,
+    fontSize: 22,
+    paddingLeft: 20,
+  },
 });
 
 const AppBar = () => {
+  const apolloClient = useApolloClient();
+  const authStorage = useContext(AuthStorageContext);
+  const { data } = useQuery(ME);
+  const me = data ? data.me : undefined;
+  const navigate = useNavigate();
+
+  const signOut = async () => {
+    await authStorage.removeAccessToken();
+    apolloClient.resetStore();
+    navigate("/", { replace: true });
+  };
+
   return (
     <View style={styles.container}>
       <ScrollView horizontal>
         <Link style={{ ...styles.menuItem, textDecoration: "none" }} to="/">
           Repositories
         </Link>
-        <Link
-          style={{ ...styles.menuItem, textDecoration: "none" }}
-          to="/signin"
-        >
-          Sign in
-        </Link>
+        {me ? (
+          <TouchableWithoutFeedback onPress={signOut}>
+            <View>
+              <Text style={styles.menuButton}>Sign out</Text>
+            </View>
+          </TouchableWithoutFeedback>
+        ) : (
+          <Link
+            style={{ ...styles.menuItem, textDecoration: "none" }}
+            to="/signin"
+          >
+            Sign in
+          </Link>
+        )}
       </ScrollView>
     </View>
   );
