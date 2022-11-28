@@ -57,7 +57,7 @@ const displayThousands = (num) => {
 const Item = ({ item }) => (
   <View style={styles.container}>
     <View style={styles.top}>
-      <Image style={styles.logo} source={item.ownerAvatarUrl}></Image>
+      <Image style={styles.logo} source={{ uri: item.ownerAvatarUrl }} />
       <View style={{ ...styles.topText, flexWrap: "wrap" }}>
         <Text style={styles.topfullname}>{item.fullName}</Text>
         <Text style={styles.topdescrition}>{item.description}</Text>
@@ -99,6 +99,7 @@ const Item = ({ item }) => (
 );
 
 const RepositoryItem = ({ item }) => {
+  console.log("RepositoryItem", item);
   return <Item item={item} />;
 };
 
