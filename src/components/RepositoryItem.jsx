@@ -54,52 +54,60 @@ const displayThousands = (num) => {
   return num > 1000 ? `${(num / 1000).toFixed(1)}k` : num;
 };
 
-const Item = ({ item }) => (
-  <View style={styles.container}>
-    <View style={styles.top}>
-      <Image style={styles.logo} source={{ uri: item.ownerAvatarUrl }} />
-      <View style={{ ...styles.topText, flexWrap: "wrap" }}>
-        <Text style={styles.topfullname}>{item.fullName}</Text>
-        <Text style={styles.topdescrition}>{item.description}</Text>
+const Item = ({ item }) => {
+  return (
+    <View style={styles.container}>
+      <View style={styles.top}>
+        <Image style={styles.logo} source={{ uri: item.ownerAvatarUrl }} />
+        <View style={{ ...styles.topText, flexWrap: "wrap" }}>
+          <Text testID="repositoryName" style={styles.topfullname}>
+            {item.fullName}
+          </Text>
+          <Text testID="repositoryDescription" style={styles.topdescrition}>
+            {item.description}
+          </Text>
+        </View>
+      </View>
+
+      <View style={styles.languageContainer}>
+        <Text testID="repositoryLanguage" style={styles.language}>
+          {item.language}
+        </Text>
+      </View>
+
+      <View style={styles.bottom}>
+        <View>
+          <Text testID="repositoryStargazersCount" style={styles.bottomnumbers}>
+            {displayThousands(item.stargazersCount)}
+          </Text>
+          <Text style={styles.bottomheaders}>Stars</Text>
+        </View>
+        <View>
+          <Text testID="repositoryForksCount" style={styles.bottomnumbers}>
+            {displayThousands(item.forksCount)}
+          </Text>
+          <Text style={styles.bottomheaders}>Forks</Text>
+        </View>
+        <View>
+          <Text testID="repositoryReviewCount" style={styles.bottomnumbers}>
+            {displayThousands(item.reviewCount)}
+          </Text>
+          <Text style={styles.bottomheaders}>Reviews</Text>
+        </View>
+        <View>
+          <Text
+            testID="repositoryReviewRatingAverage"
+            style={styles.bottomnumbers}
+          >
+            {displayThousands(item.ratingAverage)}
+          </Text>
+          <Text style={styles.bottomheaders}>Rating</Text>
+        </View>
       </View>
     </View>
-
-    <View style={styles.languageContainer}>
-      <Text style={styles.language}>{item.language}</Text>
-    </View>
-
-    <View style={styles.bottom}>
-      <View>
-        <Text style={styles.bottomnumbers}>
-          {displayThousands(item.stargazersCount)}
-        </Text>
-        <Text style={styles.bottomheaders}>Stars</Text>
-      </View>
-      <View>
-        <Text style={styles.bottomnumbers}>
-          {" "}
-          {displayThousands(item.forksCount)}
-        </Text>
-        <Text style={styles.bottomheaders}>Forks</Text>
-      </View>
-      <View>
-        <Text style={styles.bottomnumbers}>
-          {displayThousands(item.reviewCount)}
-        </Text>
-        <Text style={styles.bottomheaders}>Reviews</Text>
-      </View>
-      <View>
-        <Text style={styles.bottomnumbers}>
-          {displayThousands(item.ratingAverage)}
-        </Text>
-        <Text style={styles.bottomheaders}>Rating</Text>
-      </View>
-    </View>
-  </View>
-);
-
+  );
+};
 const RepositoryItem = ({ item }) => {
-  console.log("RepositoryItem", item);
   return <Item item={item} />;
 };
 
