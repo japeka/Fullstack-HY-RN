@@ -12,12 +12,14 @@ const styles = StyleSheet.create({
 const ItemSeparator = () => <View style={styles.separator} />;
 
 export const RepositoryListContainer = ({ repositories }) => {
-  // const repositoryNodes = repositories
-  //   ? repositories?.repositories?.edges.map((edge) => edge.node)
-  //   : [];
+  //API
   const repositoryNodes = repositories
-    ? repositories?.edges.map((edge) => edge.node)
+    ? repositories?.repositories?.edges.map((edge) => edge.node)
     : [];
+  //TEST
+  // const repositoryNodes = repositories
+  //   ? repositories?.edges.map((edge) => edge.node)
+  //   : [];
 
   return (
     repositoryNodes && (
