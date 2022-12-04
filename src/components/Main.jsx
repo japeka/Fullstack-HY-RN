@@ -1,7 +1,7 @@
 import { Platform, StyleSheet, SafeAreaView } from "react-native";
 import { Route, Routes, Navigate } from "react-router-native";
 import RepositoryList from "./RepositoryList";
-import RepositoryItem from "./RepositoryItem";
+import SingleRepository from "./RepositoryItem";
 import SignIn from "./SignIn";
 
 import AppBar from "./AppBar";
@@ -29,7 +29,7 @@ const Main = () => {
       <Routes>
         <Route path="/signin" element={<SignIn />} exact />
         <Route path="/" element={<RepositoryList />} exact />
-        <Route path="/repository/:id" element={<RepositoryItem />} exact />
+        <Route path="/repository/:id" element={<SingleRepository />} exact />
         <Route path="*" element={<Navigate to="/" />} replace />
       </Routes>
     </SafeAreaView>

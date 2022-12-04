@@ -2,6 +2,7 @@ import {
   View,
   Text,
   StyleSheet,
+  FlatList,
   Image,
   Pressable,
   Linking,
@@ -10,9 +11,12 @@ import { useNavigate, useParams } from "react-router-dom";
 import React from "react";
 import theme from "./theme";
 import useRepository from "../hooks/useRepository";
+
+import ReviewItem from "./ReviewItem";
+
 const styles = StyleSheet.create({
   container: {
-    padding: 20,
+    padding: 23,
     display: "flex",
     flexGrow: 1,
     backgroundColor: theme.colors.cardBackground,
@@ -67,6 +71,12 @@ const styles = StyleSheet.create({
     color: "#fff",
     fontSize: "1.3em",
   },
+  separator: {
+    height: 10,
+  },
+  pressable: {
+    paddingBottom: 10,
+  },
 });
 
 const displayThousands = (num) => {
@@ -79,12 +89,17 @@ const openGithub = async (url) => {
     await Linking.openURL(url);
   }
 };
-const Item = ({ item }) => {
-  const navigate = useNavigate();
 
+const ItemSeparator = () => <View style={styles.separator} />;
+
+export const RepositoryInfo = ({ item }) => {
+  const navigate = useNavigate();
   return (
     item && (
-      <Pressable onPress={() => navigate(`/repository/${item.id}`)}>
+      <Pressable
+        style={styles.pressable}
+        onPress={() => navigate(`/repository/${item.id}`)}
+      >
         <View style={styles.container}>
           <View style={styles.top}>
             <Image style={styles.logo} source={{ uri: item.ownerAvatarUrl }} />
@@ -154,16 +169,30 @@ const Item = ({ item }) => {
   );
 };
 
-const RepositoryItem = ({ item }) => {
+const SingleRepository = () => {
   const { id } = useParams();
   if (id) {
     const { repository, loading } = useRepository(id);
-    if (repository && !loading) {
-      return repository?.repository && <Item item={repository?.repository} />;
-    }
-  } else {
-    return <Item item={item} />;
+    const reviews =
+      repository !== undefined
+        ? repository?.repository?.reviews?.edges.map((e) => e.node)
+        : [];
+
+    return (
+      !loading &&
+      repository !== undefined && (
+        <FlatList
+          data={Object.values(reviews)}
+          renderItem={({ item }) => <ReviewItem review={item} />}
+          keyExtractor={(item) => item.id}
+          ItemSeparatorComponent={ItemSeparator}
+          ListHeaderComponent={() => (
+            <RepositoryInfo item={repository?.repository} />
+          )}
+        />
+      )
+    );
   }
 };
 
-export default RepositoryItem;
+export default SingleRepository;
