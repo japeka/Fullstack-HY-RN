@@ -7,10 +7,10 @@ const useRepository = (id) => {
   const [repository, setRepository] = useState();
   const { data, error, loading } = useQuery(GET_REPOSITORY, {
     variables: { id },
-    //fetchPolicy: "cache-and-network",
-    // onCompleted: (data) => {
-    //   setRepository(data.repository);
-    // },
+    fetchPolicy: "cache-and-network",
+    onCompleted: (data) => {
+      setRepository(data.repository);
+    },
   });
 
   useEffect(() => {

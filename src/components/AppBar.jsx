@@ -54,11 +54,19 @@ const AppBar = () => {
           Repositories
         </Link>
         {me ? (
-          <TouchableWithoutFeedback onPress={signOut}>
-            <View>
-              <Text style={styles.menuButton}>Sign out</Text>
-            </View>
-          </TouchableWithoutFeedback>
+          <>
+            <Link
+              style={{ ...styles.menuItem, textDecoration: "none" }}
+              to="/createreview"
+            >
+              Create a review
+            </Link>
+            <TouchableWithoutFeedback onPress={signOut}>
+              <View>
+                <Text style={styles.menuButton}>Sign out</Text>
+              </View>
+            </TouchableWithoutFeedback>
+          </>
         ) : (
           <Link
             style={{ ...styles.menuItem, textDecoration: "none" }}
