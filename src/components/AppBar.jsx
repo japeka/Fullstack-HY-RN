@@ -24,7 +24,7 @@ const styles = StyleSheet.create({
     textDecoration: "none",
     color: theme.appbar.color,
     fontSize: theme.appbar.fontsize,
-    paddingLeft: 20,
+    paddingLeft: 25,
   },
   menuButton: {
     paddingTop: 17,
@@ -68,12 +68,20 @@ const AppBar = () => {
             </TouchableWithoutFeedback>
           </>
         ) : (
-          <Link
-            style={{ ...styles.menuItem, textDecoration: "none" }}
-            to="/signin"
-          >
-            Sign in
-          </Link>
+          <>
+            <Link
+              style={{ ...styles.menuItem, textDecoration: "none" }}
+              to="/signin"
+            >
+              Sign in
+            </Link>
+            <Link
+              style={{ ...styles.menuItem, textDecoration: "none" }}
+              to="/signup"
+            >
+              Sign up
+            </Link>
+          </>
         )}
       </ScrollView>
     </View>
