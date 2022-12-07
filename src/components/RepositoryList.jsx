@@ -1,46 +1,34 @@
-import { FlatList, View, StyleSheet } from "react-native";
+import { FlatList, View, TextInput, StyleSheet } from "react-native";
 import React, { useState } from "react";
 import { RepositoryInfo } from "./RepositoryItem";
+import { useDebounce } from "use-debounce";
 import RNPickerSelect from "react-native-picker-select";
 import useRepositories from "../hooks/useRepositories";
 
 const customPickerStyles = StyleSheet.create({
-  inputIOS: {
-    fontSize: 14,
-    paddingVertical: 10,
-    paddingHorizontal: 12,
-    borderWidth: 1,
-    borderColor: "green",
-    borderRadius: 8,
-    color: "black",
-    paddingRight: 30, // to ensure the text is never behind the icon
-  },
-  inputAndroid: {
-    fontSize: 14,
-    paddingHorizontal: 10,
-    paddingVertical: 8,
-    borderWidth: 1,
-    borderColor: "blue",
-    borderRadius: 8,
-    color: "black",
-    paddingRight: 30, // to ensure the text is never behind the icon
-  },
   inputWeb: {
     margin: 12,
     fontSize: 16,
     paddingHorizontal: 10,
-    paddingVertical: 8,
+    paddingVertical: 10,
     borderWidth: 1,
     borderColor: "darkblue",
     borderRadius: 8,
     color: "black",
-    paddingRight: 30, // to ensure the text is never behind the icon
+    paddingRight: 30,
   },
 });
 
 const styles = StyleSheet.create({
   separator: {
     height: 10,
+  },
+  filter: {
+    padding: 11,
+    margin: 11,
+    fontSize: 16,
+    backgroundColor: "white",
+    border: "1px solid darkblue",
   },
 });
 
@@ -62,47 +50,60 @@ const SortOptions = ({ setSortBy }) => {
   );
 };
 
-const ItemSeparator = () => <View style={styles.separator} />;
-
-export const RepositoryListContainer = ({ repositories, setSortBy }) => {
-  const listHeader = () => {
-    return (
-      <View>
-        <SortOptions setSortBy={setSortBy} />
-      </View>
-    );
-  };
-
-  //API
-  const repositoryNodes = repositories
-    ? repositories?.edges.map((edge) => edge.node)
-    : [];
-  //TEST
-  // const repositoryNodes = repositories
-  //   ? repositories?.edges.map((edge) => edge.node)
-  //   : [];
-  console.log("repositoryNodes", repositoryNodes);
+const Filter = ({ setFilterText }) => {
   return (
-    repositoryNodes && (
-      <FlatList
-        ListHeaderComponent={listHeader(setSortBy)}
-        data={repositoryNodes}
-        testID="repositoryItem"
-        ItemSeparatorComponent={ItemSeparator}
-        renderItem={({ item }) => <RepositoryInfo item={item} />}
-      />
-    )
+    <TextInput
+      onChangeText={(text) => setFilterText(text)}
+      placeholder="Type text to filter repositories..."
+      style={styles.filter}
+    />
   );
 };
 
+const ItemSeparator = () => <View style={styles.separator} />;
+
+export class RepositoryListContainer extends React.Component {
+  renderHeader = () => {
+    const props = this.props;
+    return (
+      <View>
+        <SortOptions setSortBy={props.setSortBy} />
+        <Filter setFilterText={props.setFilterText} />
+      </View>
+    );
+  };
+  render() {
+    const props = this.props;
+    const repositoryNodes = props.repositories
+      ? this.props.repositories?.edges.map((edge) => edge.node)
+      : [];
+    return (
+      repositoryNodes && (
+        <FlatList
+          ListHeaderComponent={this.renderHeader(props.setSortBy)}
+          data={repositoryNodes}
+          testID="repositoryItem"
+          ItemSeparatorComponent={ItemSeparator}
+          renderItem={({ item }) => <RepositoryInfo item={item} />}
+        />
+      )
+    );
+  }
+}
+
 const RepositoryList = () => {
   const [sortBy, setSortBy] = useState("");
+  const [filterText, setFilterText] = useState("");
+  const [filterTextDebounced] = useDebounce(filterText, 500);
   console.log("sortBy", sortBy);
-  const { repositories } = useRepositories(sortBy);
+  console.log("filterText", filterText);
+  console.log("filterTextValue", filterTextDebounced);
+  const { repositories } = useRepositories(sortBy, filterTextDebounced);
   return (
     <RepositoryListContainer
       repositories={repositories}
       setSortBy={setSortBy}
+      setFilterText={setFilterText}
     />
   );
 };
