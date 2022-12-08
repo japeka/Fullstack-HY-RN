@@ -8,14 +8,48 @@ const useRepositories = (sortBy, filterText) => {
   const queryOptions = {
     ...variables,
     searchKeyword: filterText,
+    first: 4,
   };
 
-  const { data, loading } = useQuery(GET_REPOSITORIES, {
+  const { data, loading, fetchMore, ...result } = useQuery(GET_REPOSITORIES, {
     variables: queryOptions,
     fetchPolicy: "cache-and-network",
   });
 
-  return { repositories: data ? data.repositories : undefined, loading };
+  const handleFetchMore = () => {
+    const canFetchMore = !loading && data?.repositories.pageInfo.hasNextPage;
+
+    if (!canFetchMore) {
+      return;
+    }
+
+    fetchMore({
+      variables: {
+        after: data.repositories.pageInfo.endCursor,
+        ...queryOptions,
+      },
+      updateQuery: (previousResult, { fetchMoreResult }) => {
+        const nextResult = {
+          repositories: {
+            ...fetchMoreResult.repositories,
+            edges: [
+              ...previousResult.repositories.edges,
+              ...fetchMoreResult.repositories.edges,
+            ],
+          },
+        };
+
+        return nextResult;
+      },
+    });
+  };
+
+  return {
+    repositories: data ? data.repositories : undefined,
+    fetchMore: handleFetchMore,
+    loading,
+    ...result,
+  };
 };
 
 export default useRepositories;

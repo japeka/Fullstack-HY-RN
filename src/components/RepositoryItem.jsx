@@ -11,6 +11,7 @@ import { useNavigate, useParams } from "react-router-dom";
 import React from "react";
 import theme from "./theme";
 import useRepository from "../hooks/useRepository";
+import useReviews from "../hooks/useReviews";
 
 import ReviewItem from "./ReviewItem";
 
@@ -173,22 +174,24 @@ const SingleRepository = () => {
   const { id } = useParams();
   if (id) {
     const { repository, loading } = useRepository(id);
-    const reviews =
-      repository !== undefined
-        ? repository?.repository?.reviews?.edges.map((e) => e.node)
-        : [];
+    let { reviews, fetchMore } = useReviews(id);
+    const _reviews =
+      reviews !== undefined ? reviews.edges.map((e) => e.node) : [];
+
+    const onEndReach = () => {
+      fetchMore();
+    };
 
     return (
       !loading &&
-      repository !== undefined && (
+      repository && (
         <FlatList
-          data={Object.values(reviews)}
+          data={_reviews}
           renderItem={({ item }) => <ReviewItem review={item} />}
           keyExtractor={(item) => item.id}
           ItemSeparatorComponent={ItemSeparator}
-          ListHeaderComponent={() => (
-            <RepositoryInfo item={repository?.repository} />
-          )}
+          ListHeaderComponent={() => <RepositoryInfo item={repository} />}
+          onEndReach={onEndReach}
         />
       )
     );

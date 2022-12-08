@@ -74,6 +74,7 @@ export class RepositoryListContainer extends React.Component {
   };
   render() {
     const props = this.props;
+    const onEndReach = props.onEndReach;
     const repositoryNodes = props.repositories
       ? this.props.repositories?.edges.map((edge) => edge.node)
       : [];
@@ -85,6 +86,8 @@ export class RepositoryListContainer extends React.Component {
           testID="repositoryItem"
           ItemSeparatorComponent={ItemSeparator}
           renderItem={({ item }) => <RepositoryInfo item={item} />}
+          onEndReached={onEndReach}
+          onEndReachedThreshold={0.5}
         />
       )
     );
@@ -98,12 +101,22 @@ const RepositoryList = () => {
   console.log("sortBy", sortBy);
   console.log("filterText", filterText);
   console.log("filterTextValue", filterTextDebounced);
-  const { repositories } = useRepositories(sortBy, filterTextDebounced);
+  const { repositories, fetchMore } = useRepositories(
+    sortBy,
+    filterTextDebounced
+  );
+
+  const onEndReach = () => {
+    console.log("here");
+    fetchMore();
+  };
+
   return (
     <RepositoryListContainer
       repositories={repositories}
       setSortBy={setSortBy}
       setFilterText={setFilterText}
+      onEndReach={onEndReach}
     />
   );
 };
