@@ -98,16 +98,12 @@ const RepositoryList = () => {
   const [sortBy, setSortBy] = useState("");
   const [filterText, setFilterText] = useState("");
   const [filterTextDebounced] = useDebounce(filterText, 500);
-  console.log("sortBy", sortBy);
-  console.log("filterText", filterText);
-  console.log("filterTextValue", filterTextDebounced);
   const { repositories, fetchMore } = useRepositories(
     sortBy,
     filterTextDebounced
   );
 
   const onEndReach = () => {
-    console.log("here");
     fetchMore();
   };
 

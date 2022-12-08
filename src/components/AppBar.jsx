@@ -2,6 +2,7 @@ import React, { useContext } from "react";
 import { useApolloClient, useQuery } from "@apollo/client";
 
 import { ME } from "../graphql/queries";
+
 import {
   View,
   Text,
@@ -38,6 +39,7 @@ const AppBar = () => {
   const apolloClient = useApolloClient();
   const authStorage = useContext(AuthStorageContext);
   const { data } = useQuery(ME);
+
   const me = data ? data.me : undefined;
   const navigate = useNavigate();
 
@@ -61,6 +63,14 @@ const AppBar = () => {
             >
               Create a review
             </Link>
+
+            <Link
+              style={{ ...styles.menuItem, textDecoration: "none" }}
+              to="/myreviews"
+            >
+              My reviews
+            </Link>
+
             <TouchableWithoutFeedback onPress={signOut}>
               <View>
                 <Text style={styles.menuButton}>Sign out</Text>
