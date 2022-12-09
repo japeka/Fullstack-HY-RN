@@ -13,7 +13,7 @@ const styles = StyleSheet.create({
 const ItemSeparator = () => <View style={styles.separator} />;
 
 const MyReviews = () => {
-  const { data } = useQuery(ME, {
+  const { data, refetch } = useQuery(ME, {
     variables: {
       includeReviews: true,
     },
@@ -29,7 +29,9 @@ const MyReviews = () => {
   return (
     <FlatList
       data={myReviews}
-      renderItem={({ item }) => <MyReviewItem review={item} />}
+      renderItem={({ item }) => (
+        <MyReviewItem refetch={refetch} review={item} />
+      )}
       ItemSeparatorComponent={ItemSeparator}
       keyExtractor={(item) => item.node.id}
     />
